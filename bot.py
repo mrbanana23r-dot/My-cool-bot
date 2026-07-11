@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from g4f.client import Client
 
-TOKEN = os.environ.get('BOT_TOKEN').strip()
+TOKEN = '8902056162:AAGdJ5cUJfKSzcnf_Hsf6qVvfL4bd0uo3yM'
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
