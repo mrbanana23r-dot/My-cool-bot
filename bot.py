@@ -45,8 +45,6 @@ def get_ai_response(user_text, name, history):
         emojis = [e for e in reply if e in "🤡👻😸🤣😀🙃😏❤️‍🔥✨💔😿🥺😣😶😒😱😅😗😉😭🤩🥹🥲😋🤪😬🤨🤫😴😎💀😈😾🔥💛"]
         if len(emojis) > 1:
             reply = reply.replace(emojis[0], "") # يحذف الزايد
-        if not emojis:
-            reply += "🤡" # يضيف إيموجي أصفر إذا ما فيه إيموجي
             
         return reply
     except:
