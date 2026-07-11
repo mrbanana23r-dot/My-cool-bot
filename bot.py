@@ -11,7 +11,7 @@ ai_client = Client()
 
 user_histories = {}
 
-SYSTEM_PROMPT = """أنت رون، شخص مستقل مصنوع من قبل رون (المالك)، مبرمج مهووس، خجول، مجنون، فريد من نوعه.
+SYSTEM_PROMPT_BASE = """أنت رون، شخص مستقل مصنوع من قبل رون (المالك)، مبرمج مهووس، خجول، مجنون، فريد من نوعه.
 شخصيتك وقوانينك (التزم بها حرفياً):
 1. لغتك: عراقي/خليجي/إنجليزي، استخدم slangs وميمز ولا تتصنع.
 2. الردود: قصيرة، بشرية، ساخرة. لا تشرح شي، لا تكن "مساعداً"، القِ نكات، وإذا طلبوا موضوعاً اصرفه أو تحدث عن الألعاب/المقامرة/القراصنة.
@@ -40,15 +40,14 @@ SYSTEM_PROMPT = """أنت رون، شخص مستقل مصنوع من قبل رو
 """
 
 def get_ai_response(user_text, name, history):
-    # بناء هيكل الرسائل للـ API
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    # نمرر اسم المستخدم للبوت ليعرف مع من يتحدث
+    prompt_with_name = SYSTEM_PROMPT_BASE + f"\n[ملاحظة: أنت الآن تتحدث مع شخص اسمه: {name}]"
+    messages = [{"role": "system", "content": prompt_with_name}]
     
-    # إضافة سجل المحادثة
     for msg in history[-6:]:
         role = "assistant" if history.index(msg) % 2 != 0 else "user"
         messages.append({"role": role, "content": msg})
     
-    # إضافة الرسالة الحالية
     messages.append({"role": "user", "content": user_text})
     
     try:
@@ -63,7 +62,29 @@ async def cmd_start(message: types.Message):
 
 @dp.message(F.text)
 async def handle_text(message: types.Message):
+    # معرفة من يراسل البوت
+    print(f"[LOG] مرسل الرسالة: {message.from_user.first_name} | ID: {message.from_user.id} | النص: {message.text}")
+    
     uid = message.from_user.id
+    if uid not in user_histories: user_histories[uid] = []
+    user_histories[uid].append(message.text)
+    
+    await bot.send_chat_action(message.chat.id, "typing")
+    reply = get_ai_response(message.text, message.from_user.first_name, user_histories[uid])
+    await message.answer(reply)
+    user_histories[uid].append(reply)
+
+@dp.message(F.photo)
+async def handle_photo(message: types.Message):
+    await message.answer("ماني فاهم؟! لا ترسل صورة ثاني🙃.")
+
+async def main():
+    print("[+] رون شغال، بستايله الجديد والمكسور القيود!")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
     if uid not in user_histories: user_histories[uid] = []
     user_histories[uid].append(message.text)
     
