@@ -1,5 +1,6 @@
 import asyncio
 import random
+import os
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from g4f.client import Client
