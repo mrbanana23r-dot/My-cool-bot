@@ -56,7 +56,7 @@ def get_ai_response(user_text, name, history):
     messages.append({"role": "user", "content": user_text})
     
     try:
-        response = ai_client.chat.completions.create(model="gpt-4o", messages=messages)
+        response = ai_client.chat.completions.create(model="dolphin-2.9-llama3-8b", messages=messages)
         return response.choices[0].message.content
     except Exception as e:
         print(f"Error: {e}")
