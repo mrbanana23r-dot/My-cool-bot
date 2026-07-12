@@ -56,6 +56,7 @@ async def cmd_start(message: types.Message):
 @dp.message(F.text)
 async def handle_text(message: types.Message):
     uid = message.from_user.id
+    print(f"[LOG] {message.from_user.first_name} | {message.text}")
     if uid not in user_histories: user_histories[uid] = []
     user_histories[uid].append(message.text)
     
