@@ -1,11 +1,9 @@
-import asyncio
+Import asyncio
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from g4f.client import Client
 
 TOKEN = '8902056162:AAGdJ5cUJfKSzcnf_Hsf6qVvfL4bd0uo3yM'
-# 👇 حط هنا الـ ID الخاص بحسابك الشخصي على تليكرام (تلقاه من بوت مثل @userinfobot)
-YOUR_TELEGRAM_ID = 8902056162  
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -54,44 +52,6 @@ def get_ai_response(user_text, name, history):
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer("أهلاً، أنا رون. إذا مو جاي تسولف بشي ممتع، لا تتعب نفسك😴.")
-
-# 👇 الكود الجديد: أمر إرسال الرسالة "المجهولة الكاذبة" بمطبات ساخرة
-@dp.message(Command("anon"))
-async def cmd_anonymous_fake(message: types.Message):
-    # استخراج النص اللي بعد الأمر /anon
-    args = message.text.split(maxsplit=1)
-    
-    if len(args) < 2:
-        await message.reply("❗ اكتب رسالتك بعد الأمر يا حلو، مثلاً:\n`/anon HEY YOU LOOK LIKE SHIT~`", parse_mode="Markdown")
-        return
-
-    user_msg = args[1]
-    
-    # سحب بيانات الضحية (المستخدم)
-    user_first_name = message.from_user.first_name
-    user_username = f"@{message.from_user.username}" if message.from_user.username else "لا يوجد يوزر"
-    user_id = message.from_user.id
-
-    # تجهيز التقرير السري اللي يوصلك أنت بالخاص وبشكل منسق ومرتب
-    secret_report = (
-        f"📬 **وصلتك رسالة مجهولة:**\n\n"
-        f"💬 **الرسالة:** {user_msg}\n\n"
-        f"--- بيانات الضحية السريّة --- \n"
-        f"👤 **الاسم:** {user_first_name}\n"
-        f"🆔 **المعرف (Username):** {user_username}\n"
-        f"🔢 **الـ ID:** `{user_id}`"
-    )
-
-    try:
-        # إرسال الرسالة لك بالخاص
-        await bot.send_message(chat_id=YOUR_TELEGRAM_ID, text=secret_report, parse_mode="Markdown")
-        
-        # رد البوت الساخر على المستخدم عشان يطمنه المقلب شغال 😂
-        await message.reply("🚀 تم إرسال رسالتك بسرية تامة وبشكل مجهول 100%! الحين رون بيموت بمكانه يبي يعرف منو أنت هههههههه.")
-    
-    except Exception as e:
-        print(f"[ERROR] فشل إرسال التقرير: {e}")
-        await message.reply("❌ البوت واجه مشكلة (تأكد إن المطور مفعل الخاص مع البوت أولاً).")
 
 @dp.message(F.text)
 async def handle_text(message: types.Message):
