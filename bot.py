@@ -63,7 +63,7 @@ async def cmd_anonymous_fake(message: types.Message):
     text_parts = message.text.split(maxsplit=1)
     
     if len(text_parts) < 2 or not text_parts[1].strip():
-        await message.reply("❗ اكتب رسالتك بعد الأمر يا عبقري، مثلاً:\n`/anon رون ترا شخصيتك مستفزة`")
+        await message.reply("❗ اكتب رسالتك بعد الأمر يا حلو 😏، مثلاً:\n`/anon رون ترا شخصيتك مستفزة`")
         return
 
     user_msg = text_parts[1].strip()
@@ -88,8 +88,8 @@ async def cmd_anonymous_fake(message: types.Message):
         # الرد التمويهي في الجروب
         await message.reply ("تم إرسال رسالتك بسرية تامة وبشكل مجهول 100%! الحين الغبي بيموت بمكانه يبي يعرف منو أنت هاهاهاها 👻.")
     except Exception as e:
-        print(f"[ERROR] فشل إرسال التقرير السري لحسابك بسبب: {e}")
-        await message.reply("❌ البوت واجه مشكلة برمجية في إرسال الرسالة السرية.")
+        print(f"[ERROR] فشل إرسال الكلام السري بسبب: {e}")
+        await message.reply("❌ رون واجه مشكلة برمجية في إرسال الرسالة السرية.")
         
 # 2️⃣ استقبال النصوص العام للـ AI (يتجاهل تماماً أي رسالة تبدأ بـ / لضمان عدم التداخل)
 @dp.message(F.text & ~F.text.startswith("/"))
