@@ -36,9 +36,14 @@ def get_ai_response(user_text, name, history):
         messages.append({"role": role, "content": msg})
     messages.append({"role": "user", "content": user_text})
     
-    try:
-        # Using gpt-4o, if it hits a hard filter again, you can replace with "llama-3-70b"
-        response = ai_client.chat.completions.create(model="gpt-4o", messages=messages)
+        try:
+        response = ai_client.chat.completions.create(
+            model="gpt-4o",
+            provider="Blackbox", 
+            messages=messages
+        )
+        return response.choices[0].message.content
+
         return response.choices[0].message.content
     except Exception as e:
         print(f"Error: {e}")
