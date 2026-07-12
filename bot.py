@@ -37,8 +37,7 @@ def get_ai_response(user_text, name, history):
     
     try:
         response = ai_client.chat.completions.create(
-            model="gpt-4o",
-            provider="Blackbox", 
+            model="claude-3-opus",
             messages=messages
         )
         return response.choices[0].message.content
