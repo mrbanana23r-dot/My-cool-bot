@@ -35,16 +35,14 @@ def get_ai_response(user_text, name, history):
         role = "assistant" if history.index(msg) % 2 != 0 else "user"
         messages.append({"role": role, "content": msg})
     messages.append({"role": "user", "content": user_text})
-    
         try:
         response = ai_client.chat.completions.create(
             model="gpt-4o",
             provider="Blackbox", 
             messages=messages
         )
-        return response.choices[0].message.content
-
-        return response.choices[0].message.content
+        
+    return response.choices[0].message.content
     except Exception as e:
         print(f"Error: {e}")
         return "."
