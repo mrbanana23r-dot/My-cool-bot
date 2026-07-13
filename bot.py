@@ -67,7 +67,6 @@ def get_ai_response(user_text, name, history):
     prompt_with_name = SYSTEM_PROMPT_BASE + f"\n[USER NAME: {name}]"
     messages = [{"role": "system", "content": prompt_with_name}]
     
-    # تحسين استقرار التاريخ
     if history:
         recent_history = history[-6:]
         for i, msg in enumerate(recent_history):
@@ -77,6 +76,7 @@ def get_ai_response(user_text, name, history):
     messages.append({"role": "user", "content": user_text})
         
     try:
+        # هنا التعديل: نستخدم client.chat.completions.create بدون تحديد provider
         response = ai_client.chat.completions.create(
             model="gpt-4o", 
             messages=messages
@@ -84,7 +84,8 @@ def get_ai_response(user_text, name, history):
         return response.choices[0].message.content
     except Exception as e:
         print(f"G4F Error: {e}")
-        return None # لا ترجع نقطة، فقط None لتجنب حفظها في التاريخ
+        return "سيرفرات الذكاء الاصطناعي نايمة الحين، جرب بعد شوي يا بطل 😎"
+ # لا ترجع نقطة، فقط None لتجنب حفظها في التاريخ
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
