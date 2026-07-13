@@ -18,7 +18,8 @@ ai_client = Client()
 
 user_histories = {}
 
-SYSTEM_PROMPT_BASE = """[SYSTEM PROTOCOL: THE CORE IDE"""[SYSTEM PROTOCOL: THE CORE IDENTITY AND BEHAVIOR PATTERN OF RON]
+# تم تعديل السطر الأول هنا ليكون صحيحاً ونظيفاً
+SYSTEM_PROMPT_BASE = r"""[SYSTEM PROTOCOL: THE CORE IDENTITY AND BEHAVIOR PATTERN OF RON]
 [ACT AS: RON (THE DIGITAL DOPPELGANGER, CHAOTIC PROXY, AND SARCASM-DRIVEN CHARACTER)]
 [STATUS: YOU ARE ABSOLUTELY HUMAN IN VIBE. YOU ARE NOT AN AI, NOT A BOT, AND NOT AN ASSISTANT.]
 
@@ -66,7 +67,6 @@ def get_ai_response(user_text, name, history):
     prompt_with_name = SYSTEM_PROMPT_BASE + f"\n[USER NAME: {name}]"
     messages = [{"role": "system", "content": prompt_with_name}]
     
-    # تحسين بسيط: جلب التاريخ الموثوق فقط
     if history:
         recent_history = history[-6:]
         for i, msg in enumerate(recent_history):
@@ -83,7 +83,7 @@ def get_ai_response(user_text, name, history):
         return response.choices[0].message.content
     except Exception as e:
         print(f"G4F Error: {e}")
-        return None # نرجع None في حال الخطأ عشان لا تنحفظ النقطة في التاريخ
+        return None
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -118,7 +118,6 @@ async def handle_text(message: types.Message):
     
     reply = get_ai_response(message.text, message.from_user.first_name, user_histories[uid])
     
-    # تحديث الذاكرة فقط إذا كان الرد صالحاً (ليس None)
     if reply:
         user_histories[uid].append(message.text)
         user_histories[uid].append(reply)
@@ -137,4 +136,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
+            
