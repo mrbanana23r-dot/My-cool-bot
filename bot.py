@@ -88,7 +88,7 @@ def get_ai_response(user_text, name, history):
 async def cmd_start(message: types.Message):
     await message.answer("أهلاً، أنا رون. إذا مو جاي تسولف بشي ممتع، لا تتعب نفسك😴.")
 
-@@dp.message(Command("anon"))
+@dp.message(Command("anon"))
 async def cmd_anonymous_fake(message: types.Message):
     text_parts = message.text.split(maxsplit=1)
     if len(text_parts) < 2 or not text_parts[1].strip():
@@ -96,7 +96,7 @@ async def cmd_anonymous_fake(message: types.Message):
         return
     user_msg = text_parts[1].strip()
     
-    # هنا تم إضافة اليوزر نيم مع الاسم
+    # إضافة اليوزر نيم مع الاسم
     username = f"(@{message.from_user.username})" if message.from_user.username else "(لا يوجد يوزر)"
     secret_report = f"📬 رسالة مجهولة: {user_msg}\n👤 من: {message.from_user.first_name} {username}"
     
