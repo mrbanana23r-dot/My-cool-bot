@@ -104,6 +104,7 @@ async def cmd_anonymous_fake(message: types.Message):
 
 @dp.message(F.text & ~F.text.startswith("/"))
 async def handle_text(message: types.Message):
+    print(f"[LOG] {message.from_user.first_name} ({message.from_user.id}): {message.text}")
     uid = message.from_user.id
     if uid not in user_histories: 
         user_histories[uid] = []
