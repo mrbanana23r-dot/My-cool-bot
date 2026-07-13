@@ -1,3 +1,3 @@
-aiogram==3.13.1
+aiogram==7.8.5
 g4f==0.3.5.5
 nest-asyncio
