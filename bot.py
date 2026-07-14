@@ -71,7 +71,7 @@ def get_ai_response(user_text, name, history):
     if history:
         recent_history = history[-6:]
         for i, msg in enumerate(recent_history):
-            role = "user" if i %  == 0 else "assistant"
+            role = "user" if i % 2 == 0 else "assistant"
             messages.append({"role": role, "content": msg})
             
     messages.append({"role": "user", "content": user_text})
