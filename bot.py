@@ -108,6 +108,7 @@ async def cmd_anonymous_fake(message: types.Message):
 
 @dp.message(F.text & ~F.text.startswith("/"))
 async def handle_text(message: types.Message):
+    print(f"📬 من: {message.from_user.first_name} | ID: {message.from_user.id} | الرسالة: {message.text}")
     uid = message.from_user.id
     if uid not in user_histories: user_histories[uid] = []
     await bot.send_chat_action(message.chat.id, "typing")
