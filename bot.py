@@ -118,7 +118,7 @@ async def handle_text(message: types.Message):
         user_histories[uid].append(reply)
         await message.answer(f"\u200f{reply}")
     else:
-        await message.answer("❌ السيرفرات نايمة حالياً، حاول مرة ثانية! 😎")
+        await message.answer("❌ رون نايم حالياً ،نتكلم بعدين! 😎")
 
 @dp.message(F.photo)
 async def handle_photo(message: types.Message):
