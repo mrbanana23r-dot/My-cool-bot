@@ -78,7 +78,7 @@ def get_ai_response(user_text, name, history):
         
     try:
         response = ai_client.chat.completions.create(
-            model="g4f-4o-mini, 
+            model="gpt-4o-mini, 
             messages=messages
         )
         return response.choices[0].message.content
