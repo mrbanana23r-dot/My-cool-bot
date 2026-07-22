@@ -78,7 +78,7 @@ def get_ai_response(user_text, name, history):
         
     try:
         response = ai_client.chat.completions.create(
-            model=none, 
+            model="g4f-4o-mini, 
             messages=messages
         )
         return response.choices[0].message.content
@@ -126,6 +126,7 @@ async def handle_photo(message: types.Message):
 
 async def main():
     print("[+] Ron is fully optimized!")
+    await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
